@@ -7,5 +7,7 @@ This code challenge is built with React and TypeScript.
 To start the app, run the following comment:
 
 ```bash
+npm install
+
 npm start
 ```
