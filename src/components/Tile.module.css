@@ -1,0 +1,11 @@
+.container {
+  position: relative;
+}
+
+.tile {
+  border-radius: 4px;
+}
+
+.selected {
+  border-color: red;
+}

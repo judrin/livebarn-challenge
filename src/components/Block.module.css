@@ -1,0 +1,9 @@
+.block {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #c0c0c0;
+}
+
+.clickable {
+  cursor: pointer;
+}
