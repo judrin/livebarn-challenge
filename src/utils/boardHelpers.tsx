@@ -41,6 +41,11 @@ export const isRGBColorInitialColor = (rgb?: RGB): boolean => {
 export const createInitialRGBArray = (size: number): RGB[] =>
   Array(size).fill(config.getInitialRGB());
 
+export const buildInitialTileItem = (): TileItem => ({
+  position: { x: 0, y: 0 },
+  color: config.getInitialRGB(),
+});
+
 export const isSourceDirectionVertical = (
   sourceDirection: SourceDirection
 ): boolean =>

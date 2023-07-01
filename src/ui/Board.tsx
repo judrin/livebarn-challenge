@@ -20,13 +20,14 @@ import {
   paintColumnTiles,
   paintRowTiles,
   paintSource,
+  buildInitialTileItem,
 } from '../utils/boardHelpers';
 import GameDetails from './GameDetails';
 import { calculateDelta } from '../utils/calculator';
 
 export interface BoardProps {
   gameData: GameData;
-  resetGame: () => void;
+  resetGame: (userId: string) => void;
 }
 
 const Board = ({ gameData, resetGame }: BoardProps) => {
@@ -41,10 +42,9 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
   );
   const [currentMove, setCurrentMove] = useState<number>(0);
   const [delta, setDelta] = useState<number>(initialDelta);
-  const [selectedTilePosition, setSelectedTilePosition] = useState<Position>({
-    x: 0,
-    y: 0,
-  });
+  const [selectedTile, setSelectedTile] = useState<TileItem>(
+    buildInitialTileItem()
+  );
   const [dragging, setDragging] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [gameOver, setGameOver] = useState<boolean>(false);
@@ -53,9 +53,6 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
 
   const sourceClickable = currentMove < config.maxSourceClick;
   const tileClickable = !sourceClickable && currentMove < maxMoves;
-  const closestColor =
-    tileBoard[selectedTilePosition.y][selectedTilePosition.x];
-
   const dialogMessage = gameOver
     ? delta < config.winningDeltaThreshold
       ? config.dialogMessages.success
@@ -67,7 +64,7 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
     setTileBoard(buildInitTileBoard(width, height));
     setCurrentMove(0);
     setShowDialog(false);
-    setSelectedTilePosition({ x: 0, y: 0 });
+    setSelectedTile(buildInitialTileItem());
     setGameOver(false);
     setDelta(0);
   };
@@ -150,7 +147,7 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
 
     if (newDelta < delta) {
       setDelta(newDelta);
-      setSelectedTilePosition(tile.position);
+      setSelectedTile(tile);
     }
   };
 
@@ -161,7 +158,7 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
   const handleDialogOpenClick = (): void => {
     setShowDialog(false);
     resetBoard();
-    resetGame();
+    resetGame(userId);
   };
 
   const handleTileDragStart = (position: Position): void => {
@@ -197,7 +194,7 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
 
     if (newDelta < delta) {
       setDelta(newDelta);
-      setSelectedTilePosition(tile.position);
+      setSelectedTile(tile);
     }
   };
 
@@ -207,7 +204,7 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
         userId={userId}
         movesLeft={maxMoves - currentMove}
         targetColor={target}
-        closestColor={closestColor}
+        closestColor={selectedTile.color}
         delta={delta}
       />
       <div className={styles.board}>
@@ -227,7 +224,7 @@ const Board = ({ gameData, resetGame }: BoardProps) => {
             colors={tileBoard[rowIndex]}
             leftSourceColor={sourceMap.left[rowIndex]}
             rightSourceColor={sourceMap.right[rowIndex]}
-            selectedTilePosition={selectedTilePosition}
+            selectedTilePosition={selectedTile.position}
             onClick={handleSourceClick}
             onDrop={handleTileDrop}
             onDragStart={handleTileDragStart}

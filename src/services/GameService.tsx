@@ -17,7 +17,7 @@ export const fetchGameData = async () => {
   }
 };
 
-export const fetchGameDataWithUserId = async (userId: string) => {
+export const fetchGameDataByUserId = async (userId: string) => {
   try {
     const result = await gameServiceApi.get<GameData>(`/init/user/${userId}`);
     return result.data;
